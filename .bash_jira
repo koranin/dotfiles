@@ -1,0 +1,15 @@
+function jira {
+  BASE_URL="https://meetearnest.atlassian.net"
+
+  if [ -z "$1" ]
+  then
+    url=$BASE_URL/secure/RapidBoard.jspa
+    echo $url
+    open -a "Google Chrome" $url
+    return;
+  fi
+
+  url=$BASE_URL/browse/PLSVC-$1
+  echo $url
+  open -a "Google Chrome" $url
+}

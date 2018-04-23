@@ -1,0 +1,23 @@
+pgauth() {
+  while getopts e:r:g: option
+  do
+  case "${option}"
+  in
+  e) ENV=$OPTARG;;
+  r) ROLE=$OPTARG;;
+  g) GITHUB_TOKEN=$OPTARG;;
+  esac
+  done
+
+  PGAUTH_PATH=~/tools/pgauth
+  eval $($PGAUTH_PATH --env $ENV --server monolith --db earnest --role $ROLE --github-token $GITHUB_TOKEN -f env)
+  DBHOST=psql.$ENV.earnest.com
+
+  echo "postgresql://$PGUSER:$PGPASSWORD@$DBHOST:5432/$PGDATABASE"
+
+  MON_DB_CONF_JSON=$(jo host=$DBHOST database=$PGDATABASE user=$PGUSER password=$PGPASSWORD)
+  PGAUTH_CACHE_PATH=~/.pgauth_cache.json
+  echo $MON_DB_CONF_JSON | jq . > $PGAUTH_CACHE_PATH
+  
+  cat $PGAUTH_CACHE_PATH | jq .
+}
